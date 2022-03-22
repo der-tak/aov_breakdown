@@ -1,3 +1,3 @@
 # aov_breakdown
-Gizmo to automate AOV breakdowns in nuke
-Almost untested for now.
+GOAL: Gizmo to automate AOV breakdowns in nuke
+State: Almost untested for now, probably broken.
