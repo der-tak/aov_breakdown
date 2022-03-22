@@ -1,0 +1,945 @@
+#! /home/mainws/Apps/nuke13.1v1/libnuke-13.1.1.so -nx
+version 13.1 v1
+define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0">
+    <window x="2560" y="0" w="2560" h="1440" maximized="1" fullscreen="1" screen="0">
+        <splitter orientation="1">
+            <split size="40"/>
+            <dock id="" hideTitles="1" activePageId="Toolbar.1">
+                <page id="Toolbar.1"/>
+            </dock>
+            <split size="1897" stretch="1"/>
+            <splitter orientation="2">
+                <split size="696"/>
+                <dock id="" activePageId="Viewer.1">
+                    <page id="Viewer.1"/>
+                </dock>
+                <split size="699"/>
+                <dock id="" activePageId="DAG.1" focus="true">
+                    <page id="DAG.1"/>
+                    <page id="Curve Editor.1"/>
+                    <page id="DopeSheet.1"/>
+                </dock>
+            </splitter>
+            <split size="615"/>
+            <dock id="" activePageId="Properties.1">
+                <page id="Properties.1"/>
+                <page id="uk.co.thefoundry.backgroundrenderview.1"/>
+            </dock>
+        </splitter>
+    </window>
+</layout>
+}
+Root {
+ inputs 0
+ name /mnt/Projects/midterm_200/comp/wiper_gizmo_setup.nk
+ frame 413
+ last_frame 640
+ format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
+ proxy_type scale
+ proxy_format "1024 778 0 0 1024 778 1 1K_Super_35(full-ap)"
+ colorManagement OCIO
+ defaultViewerLUT "OCIO LUTs"
+ workingSpaceLUT scene_linear
+ monitorLut ACES/sRGB
+ monitorOutLUT "sRGB (ACES)"
+ int8Lut matte_paint
+ int16Lut texture_paint
+ logLut compositing_log
+ floatLut scene_linear
+ set_by_user_template true
+}
+BackdropNode {
+ inputs 0
+ name AOV_Shuffles
+ tile_color 0x7171c600
+ label "Main AOVs"
+ note_font_size 42
+ xpos -439
+ ypos -104
+ bdwidth 687
+ bdheight 177
+}
+BackdropNode {
+ inputs 0
+ name Overview
+ tile_color 0x388e8e00
+ label "just for ref"
+ note_font_size 42
+ xpos 103
+ ypos -280
+ bdwidth 189
+ bdheight 148
+}
+BackdropNode {
+ inputs 0
+ name Z_Depth_Mist
+ tile_color 0x7171c600
+ label "Z_Deth Mist"
+ note_font_size 42
+ xpos -770
+ ypos -117
+ bdwidth 199
+ bdheight 137
+}
+BackdropNode {
+ inputs 0
+ name mb_setup
+ tile_color 0xaaaaaa00
+ label "opt MB"
+ note_font_size 42
+ xpos 400
+ ypos -82
+ bdwidth 135
+ bdheight 121
+}
+BackdropNode {
+ inputs 0
+ name range
+ tile_color 0x8e8e3800
+ label framrange
+ note_font_size 42
+ xpos 402
+ ypos 241
+ bdwidth 170
+ bdheight 109
+}
+Read {
+ inputs 0
+ file_type exr
+ format "1080 1350 0 0 1080 1350 1 "
+ proxy_format "1080 1350 0 0 1080 1350 1 "
+ last 480
+ after black
+ origlast 480
+ origset true
+ offset_negative_display_window false
+ name Read1
+ xpos -209
+ ypos -234
+}
+set N784e0f00 [stack 0]
+LayerContactSheet {
+ showLayerNames true
+ name LayerContactSheet1
+ tile_color 0x78ad2bff
+ xpos 115
+ ypos -220
+ postage_stamp true
+}
+push $N784e0f00
+push $N784e0f00
+add_layer {GI GI.red GI.green GI.blue GI.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 GI
+ fromInput2 {{0} B}
+ mappings "4 GI.red 0 0 rgba.red 0 0 GI.green 0 1 rgba.green 0 1 GI.blue 0 2 rgba.blue 0 2 GI.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle7
+ label "\[value in1]"
+ xpos 158
+ ypos -22
+ postage_stamp true
+}
+set N9c068100 [stack 0]
+push $N784e0f00
+add_layer {Emission Emission.red Emission.green Emission.blue Emission.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 Emission
+ fromInput2 {{0} B}
+ mappings "4 Emission.red 0 0 rgba.red 0 0 Emission.green 0 1 rgba.green 0 1 Emission.blue 0 2 rgba.blue 0 2 Emission.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle6
+ label "\[value in1]"
+ xpos 29
+ ypos -22
+ postage_stamp true
+}
+set N9c047900 [stack 0]
+push $N784e0f00
+add_layer {SpecularLighting SpecularLighting.red SpecularLighting.green SpecularLighting.blue SpecularLighting.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 SpecularLighting
+ fromInput2 {{0} B}
+ mappings "4 SpecularLighting.red 0 0 rgba.red 0 0 SpecularLighting.green 0 1 rgba.green 0 1 SpecularLighting.blue 0 2 rgba.blue 0 2 SpecularLighting.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle5
+ label "\[value in1]"
+ xpos -209
+ ypos -24
+ postage_stamp true
+}
+set N9c047200 [stack 0]
+push $N784e0f00
+add_layer {Refractions Refractions.red Refractions.green Refractions.blue Refractions.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 Refractions
+ fromInput2 {{0} B}
+ mappings "4 Refractions.red 0 0 rgba.red 0 0 Refractions.green 0 1 rgba.green 0 1 Refractions.blue 0 2 rgba.blue 0 2 Refractions.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle4
+ label "\[value in1]"
+ xpos -93
+ ypos -24
+ postage_stamp true
+}
+set N9c046b00 [stack 0]
+push 0
+push $N784e0f00
+add_layer {Reflections Reflections.red Reflections.green Reflections.blue Reflections.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 Reflections
+ fromInput2 {{0} B}
+ mappings "4 Reflections.red 0 0 rgba.red 0 0 Reflections.green 0 1 rgba.green 0 1 Reflections.blue 0 2 rgba.blue 0 2 Reflections.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle3
+ label "\[value in1]"
+ xpos -329
+ ypos -19
+ postage_stamp true
+}
+set N9c046400 [stack 0]
+push $N784e0f00
+add_layer {DiffuseLighting DiffuseLighting.red DiffuseLighting.green DiffuseLighting.blue DiffuseLighting.alpha}
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 DiffuseLighting
+ fromInput2 {{0} B}
+ mappings "4 DiffuseLighting.red 0 0 rgba.red 0 0 DiffuseLighting.green 0 1 rgba.green 0 1 DiffuseLighting.blue 0 2 rgba.blue 0 2 DiffuseLighting.alpha 0 3 rgba.alpha 0 3"
+ name Shuffle2
+ label "\[value in1]"
+ xpos -429
+ ypos -19
+ postage_stamp true
+}
+set N9c045d00 [stack 0]
+Merge2 {
+ inputs 7+1
+ operation plus
+ name Plus
+ xpos -176
+ ypos 156
+ hide_input true
+}
+set N9c045600 [stack 0]
+TimeClip {
+ time ""
+ first {{"MultiWiper.hold_frame_number + 1"}}
+ last {{Read1.origlast}}
+ origfirst {{"MultiWiper.hold_frame_number + 1"}}
+ origlast {{Read1.origlast}}
+ origset true
+ mask_metadata true
+ name TimeClip3
+ xpos 170
+ ypos 243
+}
+TimeOffset {
+ time_offset {{"TimeClip2.last - TimeClip3.first"}}
+ time ""
+ name TimeOffset1
+ xpos 170
+ ypos 278
+}
+push $N9c045600
+push $N9c068100
+push $N9c047900
+push $N9c046b00
+push $N9c047200
+push $N9c046400
+push $N9c045d00
+push $N9c045600
+Group {
+ inputs 8
+ name MultiWiper
+ tile_color 0xdeffff
+ note_font Helvetica
+ xpos 29
+ ypos 156
+ hide_input true
+ addUserKnob {20 User l Multiwiper}
+ addUserKnob {41 min_frame_clamp l "Start frame" t "Start of animation." T Wiper.min_frame_clamp}
+ addUserKnob {6 hold_frame_enabled l "Enable hold frame" t "Holds a frame on your inputs." +STARTLINE}
+ hold_frame_enabled true
+ addUserKnob {3 hold_frame_number l "Hold at (frame)" t "Frame to hold on."}
+ hold_frame_number {{min_frame_clamp}}
+ addUserKnob {41 format l Format T Wiper.format}
+ addUserKnob {26 ""}
+ addUserKnob {3 input_num l "Inputs !ONLY USE BUTTONS!" t "change number of inputs only by hitting buttons"}
+ input_num 8
+ addUserKnob {22 remove_input l - t "Removes input. You can't go below 2 inputs." T "from __future__ import with_statement\nimport nuke\n\ngrp = nuke.thisNode()\ncurrentInput = int(grp.knob(\"input_num\").value())\n\nif currentInput > 2:\n    # Remove node\n    with grp:\n        if nuke.exists(\"Input%s\" % currentInput):\n            nuke.delete(nuke.toNode(\"Input%s\" % currentInput))\n            nuke.delete(nuke.toNode(\"FrameHold%s\" % currentInput))\n            nuke.delete(nuke.toNode(\"Crop%s\" % currentInput))\n    # Edit current input number\n    grp.knob(\"input_num\").setValue(currentInput - 1)\nelse:\n    nuke.message(\"This node needs at least 2 inputs.\")\n" +STARTLINE}
+ addUserKnob {22 add_input l + t "Adds input." -STARTLINE T "from __future__ import with_statement\nimport nuke\n\ngrp = nuke.thisNode()\n\ncurrentInputs = int(grp.knob(\"input_num\").value())\nnextInput = currentInputs + 1\n\nwith grp:\n    # Creates input node\n    inputnod = nuke.createNode(\"Input\", inpanel=False)\n    frameholdnod = nuke.createNode(\"FrameHold\", inpanel=False)\n    cropnod = nuke.createNode(\"Crop\", inpanel=False)\n    cropnod.knob(\"box\").setExpression(\"parent.input.format.w\", 2)\n    cropnod.knob(\"box\").setExpression(\"parent.input.format.h\", 3)\n    frameholdnod.knob(\"first_frame\").setExpression(\"parent.hold_frame_number\")\n    frameholdnod.knob(\"disable\").setExpression(\"!parent.hold_frame_enabled\")\n    # Connect output to switch 1 & 2\n    switch1 = nuke.toNode(\"Switch1\")\n    switch2 = nuke.toNode(\"Switch2\")\n    switch1.connectInput(currentInputs, cropnod)\n    switch2.connectInput(currentInputs, cropnod)\n\n# Add 1 to the total of inputs\ngrp.knob(\"input_num\").setValue(nextInput)\n\n"}
+ addUserKnob {26 ""}
+ addUserKnob {41 waveLength l "Wipe duration" t "Duration of the wipe (in frames)" T Wiper.waveLength}
+ addUserKnob {41 wait_between l Wait t "Sets the time between two wipes." T Wiper.wait_between}
+ addUserKnob {26 waitlabel l "" -STARTLINE T "frame(s) between each wipe."}
+ addUserKnob {41 size l "Wipe soften" t "How soft is the wipe effect." T Wiper.size}
+ addUserKnob {7 wipe_angle l "Wipe angle" t "Adjusts the angle of the wipe. Minimum is -90 degrees, max is 90 degrees (horizontal)." R -90 90}
+ wipe_angle 30
+ addUserKnob {20 wipe_tx_tab l Labels}
+ addUserKnob {6 wipe_labels_enabled l Enabled t "Enables the labels." +STARTLINE}
+ wipe_labels_enabled true
+ addUserKnob {1 wipe_labels l Labels t "Enter labels separated by commas. First label goes to the first wipe, etc."}
+ wipe_labels Beauty,Diffuse,Reflections,Specular,Refrections,Emmision,GI,Beauty
+ addUserKnob {26 ""}
+ addUserKnob {2 wipe_labels_font l "Font path" t "Path to the font you want to use..."}
+ wipe_labels_font /usr/share/fonts/cantarell/Cantarell-Regular.otf
+ addUserKnob {3 wipe_labels_scale l Size t "Size of the font."}
+ wipe_labels_scale 65
+ addUserKnob {41 color l Color t "Color of the font." T Text1.color}
+ addUserKnob {41 opacity l Opacity t "Opacity of the font." T Text1.opacity}
+ addUserKnob {26 ""}
+ addUserKnob {12 wipe_label_pos l Position t "Position of the labels in the frame."}
+ wipe_label_pos {-250 750}
+ addUserKnob {20 about_tab l About}
+ addUserKnob {26 about_tx l "" +STARTLINE T "Script written by Yoann Gouraud, 2012-2013 \nygouraud@artfx.fr\n\nIf this gizmo has been useful to you, mentionning my name in your reel is\nappreciated but not required.\n\nCredits also goes to David Emeny for creating the original Wiper gizmo.\nhttp://www.davidemeny.com/nuke.php"}
+}
+ Input {
+  inputs 0
+  name Input14
+  xpos 819
+  ypos -344
+  number 13
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold14
+  xpos 819
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop14
+  xpos 819
+  ypos -278
+ }
+set Nd018a400 [stack 0]
+ Input {
+  inputs 0
+  name Input13
+  xpos 709
+  ypos -344
+  number 12
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold13
+  xpos 709
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop13
+  xpos 709
+  ypos -278
+ }
+set Nd0188f00 [stack 0]
+ Input {
+  inputs 0
+  name Input12
+  xpos 599
+  ypos -344
+  number 11
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold12
+  xpos 599
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop12
+  xpos 599
+  ypos -278
+ }
+set Nd0167900 [stack 0]
+push 0
+push 0
+push 0
+ Input {
+  inputs 0
+  name Input8
+  xpos 1042
+  ypos -344
+  number 7
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold8
+  xpos 1042
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop8
+  xpos 1042
+  ypos -278
+ }
+set Nd0164f00 [stack 0]
+ Input {
+  inputs 0
+  name Input7
+  xpos 1152
+  ypos -344
+  number 6
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold7
+  xpos 1152
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop7
+  xpos 1152
+  ypos -278
+ }
+set Nd013f900 [stack 0]
+ Input {
+  inputs 0
+  name Input6
+  xpos 1262
+  ypos -344
+  number 5
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold6
+  xpos 1262
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop6
+  xpos 1262
+  ypos -278
+ }
+set Nd013e400 [stack 0]
+ Input {
+  inputs 0
+  name Input5
+  xpos 1372
+  ypos -344
+  number 4
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold5
+  xpos 1372
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop5
+  xpos 1372
+  ypos -278
+ }
+set Nd013cf00 [stack 0]
+ Input {
+  inputs 0
+  name Input4
+  xpos 1482
+  ypos -344
+  number 3
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold4
+  xpos 1482
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop4
+  xpos 1482
+  ypos -278
+ }
+set Nd010b900 [stack 0]
+ Input {
+  inputs 0
+  name Input3
+  xpos 1592
+  ypos -344
+  number 2
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold3
+  xpos 1592
+  ypos -318
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop3
+  xpos 1592
+  ypos -278
+ }
+set Nd010a400 [stack 0]
+ Input {
+  inputs 0
+  name Input2
+  xpos 394
+  ypos -213
+  number 1
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold2
+  xpos 394
+  ypos -170
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop2
+  xpos 394
+  ypos -121
+ }
+set Nd0108f00 [stack 0]
+ Input {
+  inputs 0
+  name Input1
+  xpos 88
+  ypos -215
+ }
+ FrameHold {
+  firstFrame {{parent.hold_frame_number}}
+  name FrameHold1
+  xpos 88
+  ypos -168
+  disable {{!parent.hold_frame_enabled}}
+ }
+ Crop {
+  box {0 0 {parent.input.format.w} {parent.input.format.h}}
+  name Crop1
+  xpos 88
+  ypos -120
+ }
+set Nd00e3900 [stack 0]
+ Switch {
+  inputs 14
+  which {{parent.Wiper.wipe_number}}
+  name Switch1
+  xpos 88
+  ypos 35
+ }
+push $Nd018a400
+push $Nd0188f00
+push $Nd0167900
+push 0
+push 0
+push 0
+push $Nd0164f00
+push $Nd013f900
+push $Nd013e400
+push $Nd013cf00
+push $Nd010b900
+push $Nd010a400
+push $Nd0108f00
+push $Nd00e3900
+ Switch {
+  inputs 14
+  which {{"parent.Wiper.wipe_number  + 1" x59 1}}
+  name Switch2
+  xpos 394
+  ypos 36
+ }
+ Group {
+  inputs 2
+  name Wiper
+  note_font "Bitstream Vera Sans"
+  xpos 262
+  ypos 169
+  mapsize {0.15 0.15}
+  addUserKnob {20 Wiper}
+  addUserKnob {41 wipe l Wipe T Ramp1.wipe}
+  addUserKnob {41 size l Soften T Blur1.size}
+  addUserKnob {20 User}
+  addUserKnob {41 format T Constant1.format}
+  addUserKnob {7 waveLength l Wavelength}
+  waveLength 10
+  addUserKnob {3 offset l Offset}
+  offset 1
+  addUserKnob {3 wait_between l "Wait between wipes (frames)"}
+  wait_between 10
+  addUserKnob {3 inputs_number_int l "Inputs number"}
+  inputs_number_int {{"\[python nuke.thisParent().knob(\\\"input_num\\\").value()]"}}
+  addUserKnob {3 wipe_number_labels l "Wipe number for labels"}
+  wipe_number_labels {{"int(frame - min_frame_clamp)<0?-1:\nint(clamp(\nclamp(frame - min_frame_clamp, 0, 100000) \n/ (waveLength + wait_between),0,inputs_number_int-2))"}}
+  addUserKnob {3 wipe_number l "Wipe number"}
+  wipe_number {{"int(clamp(frame - min_frame_clamp, 0, 100000) / (waveLength + wait_between))"}}
+  addUserKnob {3 total_wipe_duration l "Total wipe duration (frames)"}
+  total_wipe_duration {{"waveLength + wait_between"}}
+  addUserKnob {6 is_waiting l Waiting -STARTLINE}
+  is_waiting {{"\[if \{\[value frame] >= \[value min_frame_clamp]\} \{\nreturn \{inrange(clamp(frame - min_frame_clamp, 0 ,1000000), waveLength + (total_wipe_duration * wipe_number), waveLength + (total_wipe_duration * wipe_number) + wait_between)\}\n\} else \{ \nreturn 0\n\}]"}}
+  addUserKnob {7 wipe_value_add l "Add wipe value"}
+  wipe_value_add {{"\[ if \{\[value is_waiting]\} \{ return 200\} else \{ return 0\}]"}}
+  addUserKnob {3 wipe_progress l "Wipe progress (frames)"}
+  wipe_progress {{"\[if \{\[value is_waiting]\} \{ return 0\} else \{ return \{clamp(frame - min_frame_clamp, 0, 10000) - (total_wipe_duration * wipe_number) \}\}]"}}
+  addUserKnob {7 wipe_progress_normalized l "Wipe progress (normalized)"}
+  wipe_progress_normalized {{"wipe_progress / waveLength"}}
+  addUserKnob {7 wipe_value l "Wipe value"}
+  wipe_value {{"\[if \{\[value frame] >= \[value min_frame_clamp]\} \{return \{-100 + (200*wipe_progress_normalized) + wipe_value_add\}\} else \{ return -100\}]"}}
+  addUserKnob {3 max_frame_clamp l "Max frame"}
+  max_frame_clamp 60
+  addUserKnob {3 min_frame_clamp l "Min frame"}
+  min_frame_clamp 176
+  addUserKnob {3 clamped_frame l "Clamped frame"}
+  clamped_frame 54
+ }
+  Input {
+   inputs 0
+   name Input2
+   xpos -769
+   ypos -668
+   number 1
+  }
+  Dot {
+   name Dot19
+   xpos -735
+   ypos -532
+  }
+set Nd00e1600 [stack 0]
+  Dot {
+   name Dot3
+   xpos -735
+   ypos -154
+  }
+  Input {
+   inputs 0
+   name Input1
+   xpos -641
+   ypos -668
+  }
+set Nd00e0800 [stack 0]
+  Dot {
+   name Dot2
+   xpos -481
+   ypos -603
+  }
+  Dot {
+   name Dot1
+   xpos -481
+   ypos -280
+  }
+  Constant {
+   inputs 0
+   channels rgb
+   format "1080 1350 0 0 1080 1350 1 "
+   name Constant1
+   xpos -423
+   ypos -786
+  }
+  Ramp {
+   output {-rgba.red -rgba.green -rgba.blue rgba.alpha}
+   p0 {{root.width*(wipe/100)-4} 0}
+   p1 {{root.width+2} 0}
+   name Ramp1
+   xpos -423
+   ypos -693
+   addUserKnob {20 User}
+   addUserKnob {7 wipe l Wipe R -100 100}
+   wipe {{wipe_value}}
+  }
+  Transform {
+   scale {{"1 + 0.004 * parent.parent.size"}}
+   center {640 360}
+   name Transform2
+   xpos -361
+   ypos -633
+  }
+  Transform {
+   rotate {{parent.parent.wipe_angle x334 13.75305881}}
+   scale {{"scale_to_match / parent.Constant1.height" x334 2.890371758}}
+   center {{"parent.Constant1.width / 2"} {"parent.Constant1.height / 2"}}
+   name Transform1
+   xpos -423
+   ypos -585
+   addUserKnob {20 User}
+   addUserKnob {7 scale_to_match l "Scale to match"}
+   scale_to_match {{"parent.Constant1.width * sin(abs(rotate)*0.0175) + parent.Constant1.height * cos(abs(rotate)*0.0175)"}}
+  }
+  Grade {
+   channels alpha
+   blackpoint 0.5
+   whitepoint 0.5
+   name Grade1
+   xpos -423
+   ypos -531
+  }
+  Clamp {
+   name Clamp1
+   xpos -423
+   ypos -479
+  }
+  Blur {
+   channels alpha
+   size 50
+   name Blur1
+   xpos -423
+   ypos -433
+  }
+push $Nd00e1600
+push $Nd00e0800
+  Keymix {
+   inputs 3
+   bbox B
+   name Keymix1
+   xpos -641
+   ypos -433
+  }
+  Switch {
+   inputs 2
+   which {{wipe>99?1:0}}
+   name Switch1
+   xpos -641
+   ypos -285
+  }
+  Switch {
+   inputs 2
+   which {{wipe<-99?1:0}}
+   name Switch2
+   xpos -641
+   ypos -159
+  }
+  Output {
+   name Output1
+   xpos -641
+   ypos -36
+  }
+push $Nd00e0800
+  Viewer {
+   frame_range 1-632
+   viewerProcess "sRGB (ACES)"
+   name Viewer1
+   selected true
+   xpos -423
+   ypos -712
+  }
+ end_group
+ Text {
+  message "\[python nuke.thisParent().knob(\"wipe_labels\").value().split(\",\")\\\[int(nuke.toNode(\"Wiper\").knob(\"wipe_number_labels\").value() + 1)\\]]"
+  font "\[value parent.wipe_labels_font]"
+  size {{parent.wipe_labels_scale}}
+  yjustify center
+  Transform 1
+  box {320 180 960 540}
+  translate {{parent.wipe_label_pos.x x151 -326} {parent.wipe_label_pos.y x151 190}}
+  center {640 360}
+  color {0.8 0.8 0.8 1}
+  name Text1
+  xpos 262
+  ypos 238
+  disable {{!parent.wipe_labels_enabled}}
+ }
+ Output {
+  name Output1
+  xpos 262
+  ypos 426
+ }
+end_group
+TimeClip {
+ time ""
+ first {{"MultiWiper.hold_frame_number + 1"}}
+ last {{"this.first + (MultiWiper.waveLength *( MultiWiper.input_num - 1)+ MultiWiper.wait_between * (MultiWiper.input_num - 1))" x70 0}}
+ origfirst {{Read1.origfirst}}
+ origlast {{MultiWiper.hold_frame_number}}
+ origset true
+ mask_metadata true
+ name TimeClip2
+ xpos 29
+ ypos 216
+}
+push $N9c045600
+TimeClip {
+ time ""
+ last {{MultiWiper.hold_frame_number}}
+ origfirst {{Read1.origfirst x327 1}}
+ origlast {{MultiWiper.hold_frame_number}}
+ origset true
+ mask_metadata true
+ name TimeClip1
+ xpos -89
+ ypos 321
+}
+Merge2 {
+ inputs 2
+ name Merge2
+ xpos 29
+ ypos 321
+}
+Merge2 {
+ inputs 2
+ name Merge3
+ xpos 170
+ ypos 321
+}
+FrameRange {
+ first_frame {{Read1.origfirst}}
+ last_frame {{"Read1.origlast + TimeOffset1.time_offset"}}
+ time ""
+ name FrameRange1
+ xpos 412
+ ypos 321
+}
+Viewer {
+ frame 413
+ frame_range 1-640
+ viewerProcess "sRGB (ACES)"
+ name Viewer1
+ xpos 412
+ ypos 399
+}
+Group {
+ inputs 0
+ name MotionBlur
+ xpos 410
+ ypos -2
+ addUserKnob {20 mbsettings l "Motion Blur Settings" t "Adjust Motion Blur"}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T VectorBlur1.useGPUIfAvailable}
+ addUserKnob {41 uv l "uv channels" T VectorBlur1.uv}
+ addUserKnob {41 mv_presets l "mv presets" T VectorBlur1.mv_presets}
+ addUserKnob {26 mb_div l "Motion Blur"}
+ addUserKnob {41 blur_type l "blur type" T VectorBlur1.blur_type}
+ addUserKnob {41 scale l "motion amount" T VectorBlur1.scale}
+ addUserKnob {41 motion_falloff l "motion falloff" T VectorBlur1.motion_falloff}
+ addUserKnob {41 offset l "shutter offset" T VectorBlur1.offset}
+ addUserKnob {41 grow_bbox l "expand blur bbox" T VectorBlur1.grow_bbox}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 370
+  ypos 68
+ }
+ Dot {
+  name Dot4
+  xpos 404
+  ypos 108
+ }
+set Nbf465d00 [stack 0]
+add_layer {MotionVectors MotionVectors.red MotionVectors.green MotionVectors.blue}
+ Shuffle2 {
+  fromInput1 {{0} B}
+  in1 MotionVectors
+  out1 rgb
+  fromInput2 {{0} B}
+  mappings "3 MotionVectors.red 0 0 rgba.red 0 0 MotionVectors.green 0 1 rgba.green 0 1 MotionVectors.blue 0 2 rgba.blue 0 2"
+  name Shuffle1
+  label "\[value in1]"
+  xpos 478
+  ypos 73
+  postage_stamp true
+ }
+ Dot {
+  name Dot2
+  xpos 512
+  ypos 189
+ }
+push $Nbf465d00
+ Shuffle2 {
+  inputs 2
+  fromInput1 {{0} B A}
+  fromInput2 {{1} B A}
+  in2 rgba
+  out2 motion
+  mappings "8 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2 rgba.alpha 0 3 rgba.alpha 0 3 rgba.red 1 0 forward.u 1 0 rgba.green 1 1 forward.v 1 1 rgba.blue 1 2 backward.u 1 2 rgba.alpha 1 3 backward.v 1 3"
+  name Shuffle8
+  xpos 370
+  ypos 185
+ }
+ VectorBlur2 {
+  uv motion
+  mv_presets "V-Ray Velocity"
+  uv_offset -0.5
+  scale 14
+  soft_lines true
+  normalize false
+  name VectorBlur1
+  xpos 370
+  ypos 238
+ }
+ Output {
+  name Output1
+  xpos 370
+  ypos 303
+ }
+end_group
+StickyNote {
+ inputs 0
+ name StickyNote1
+ label "calculates new global framerange"
+ xpos 404
+ ypos 296
+}
+Group {
+ inputs 0
+ name Z_depth_Mist
+ xpos -714
+ ypos -21
+ addUserKnob {20 mist_settings l "Mist Settings"}
+ addUserKnob {41 value l Strength t "Adjust Mist strength and size based on Z_Depth" T Multiply1.value}
+ addUserKnob {41 color l Color t "Adjust mist base color" T Constant1.color}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos -889
+  ypos 208
+ }
+ Shuffle2 {
+  fromInput1 {{0} B}
+  fromInput2 {{0} B}
+  mappings "4 rgba.alpha 0 3 rgba.red 0 0 rgba.alpha 0 3 rgba.green 0 1 rgba.alpha 0 3 rgba.blue 0 2 rgba.alpha 0 3 rgba.alpha 0 3"
+  name Shuffle8
+  xpos -889
+  ypos 248
+ }
+ Multiply {
+  channels rgba
+  value 1.1
+  name Multiply1
+  xpos -889
+  ypos 292
+ }
+ Constant {
+  inputs 0
+  channels rgb
+  color {0.016 0.016 0.02 1}
+  color_panelDropped true
+  format "1080 1350 0 0 1080 1350 1 "
+  name Constant1
+  xpos -1059
+  ypos 321
+ }
+ Copy {
+  inputs 2
+  from0 rgba.alpha
+  to0 rgba.alpha
+  name Copy1
+  selected true
+  xpos -889
+  ypos 338
+ }
+ Premult {
+  name Premult1
+  xpos -770
+  ypos 345
+ }
+ Output {
+  name Output1
+  xpos -660
+  ypos 345
+ }
+end_group
