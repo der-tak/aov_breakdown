@@ -10,15 +10,16 @@ define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
             </dock>
             <split size="1897" stretch="1"/>
             <splitter orientation="2">
-                <split size="989"/>
+                <split size="819"/>
                 <dock id="" activePageId="Viewer.1">
                     <page id="Viewer.1"/>
                 </dock>
-                <split size="406"/>
+                <split size="576"/>
                 <dock id="" activePageId="DAG.1" focus="true">
                     <page id="DAG.1"/>
                     <page id="Curve Editor.1"/>
                     <page id="DopeSheet.1"/>
+                    <page id="DAG.2"/>
                 </dock>
             </splitter>
             <split size="615"/>
@@ -33,7 +34,7 @@ define_window_layout_xml {<?xml version="1.0" encoding="UTF-8"?>
 Root {
  inputs 0
  name /mnt/Projects/midterm_200/comp/wiper_gizmo_setup.nk
- frame 537
+ frame 166
  last_frame 640
  format "2048 1556 0 0 2048 1556 1 2K_Super_35(full-ap)"
  proxy_type scale
@@ -75,12 +76,12 @@ BackdropNode {
  inputs 0
  name Z_Depth_Mist
  tile_color 0x7171c600
- label "Z_Deth Mist"
+ label "Z_Depth Mist"
  note_font_size 42
  xpos -770
  ypos -117
- bdwidth 199
- bdheight 138
+ bdwidth 241
+ bdheight 128
 }
 BackdropNode {
  inputs 0
@@ -133,11 +134,55 @@ StickyNote {
  xpos 404
  ypos 296
 }
-Group {
+StickyNote {
  inputs 0
+ name StickyNote3
+ tile_color 0x51cc11ff
+ label "adjust for render engine\n(links on github page)"
+ note_font_size 24
+ xpos -296
+ ypos 171
+}
+StickyNote {
+ inputs 0
+ name StickyNote2
+ tile_color 0x24cc14ff
+ label "adjust times for blending"
+ note_font_size 24
+ xpos 42
+ ypos 133
+}
+Read {
+ inputs 0
+ file_type exr
+ file /mnt/Projects/midterm_200/images/insta_aov/main_scene_01.Beauty.#.exr
+ format "1080 1350 0 0 1080 1350 1 "
+ proxy_format "1080 1350 0 0 1080 1350 1 "
+ last 480
+ after black
+ origlast 480
+ origset true
+ name Read1
+ xpos -209
+ ypos -234
+}
+set Na8922b00 [stack 0]
+Shuffle2 {
+ fromInput1 {{0} B}
+ in1 depth
+ fromInput2 {{0} B}
+ mappings "4 depth.Z 0 0 rgba.red 0 0 depth.Z 0 0 rgba.green 0 1 depth.Z 0 0 rgba.blue 0 2 depth.Z 0 0 rgba.alpha 0 3"
+ name Shuffle1
+ label "\[value in1]"
+ xpos -659
+ ypos -227
+ postage_stamp true
+}
+Group {
  name Z_depth_Mist
- xpos -714
- ypos -21
+ xpos -659
+ ypos -68
+ postage_stamp true
  addUserKnob {20 mist_settings l "Mist Settings"}
  addUserKnob {41 value l Strength t "Adjust Mist strength and size based on Z_Depth" T Multiply1.value}
  addUserKnob {41 color l Color t "Adjust mist base color" T Constant1.color}
@@ -158,7 +203,7 @@ Group {
  }
  Multiply {
   channels rgba
-  value 1.1
+  value 0.92
   name Multiply1
   xpos -889
   ypos 292
@@ -166,7 +211,7 @@ Group {
  Constant {
   inputs 0
   channels rgb
-  color {0.016 0.016 0.02 1}
+  color {0.048 0.04 0.044 1}
   color_panelDropped true
   format "1080 1350 0 0 1080 1350 1 "
   name Constant1
@@ -178,7 +223,6 @@ Group {
   from0 rgba.alpha
   to0 rgba.alpha
   name Copy1
-  selected true
   xpos -889
   ypos 338
  }
@@ -189,25 +233,12 @@ Group {
  }
  Output {
   name Output1
+  selected true
   xpos -660
   ypos 345
  }
 end_group
-Read {
- inputs 0
- file_type exr
- file /mnt/Projects/midterm_200/images/insta_aov/main_scene_01.Beauty.#.exr
- format "1080 1350 0 0 1080 1350 1 "
- proxy_format "1080 1350 0 0 1080 1350 1 "
- last 480
- after black
- origlast 480
- origset true
- name Read1
- xpos -209
- ypos -234
-}
-set N8c0ac800 [stack 0]
+push $Na8922b00
 LayerContactSheet {
  showLayerNames true
  name LayerContactSheet1
@@ -216,7 +247,84 @@ LayerContactSheet {
  ypos -220
  postage_stamp true
 }
-push $N8c0ac800
+add_layer {MotionVectors MotionVectors.red MotionVectors.green MotionVectors.blue}
+Group {
+ inputs 0
+ name MotionBlur
+ xpos 410
+ ypos -2
+ addUserKnob {20 mbsettings l "Motion Blur Settings" t "Adjust Motion Blur"}
+ addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T VectorBlur1.useGPUIfAvailable}
+ addUserKnob {41 in1 T Shuffle1.in1}
+ addUserKnob {41 uv l "uv channels" T VectorBlur1.uv}
+ addUserKnob {41 mv_presets l "mv presets" T VectorBlur1.mv_presets}
+ addUserKnob {26 mb_div l "Motion Blur"}
+ addUserKnob {41 blur_type l "blur type" T VectorBlur1.blur_type}
+ addUserKnob {41 scale l "motion amount" T VectorBlur1.scale}
+ addUserKnob {41 motion_falloff l "motion falloff" T VectorBlur1.motion_falloff}
+ addUserKnob {41 offset l "shutter offset" T VectorBlur1.offset}
+ addUserKnob {41 grow_bbox l "expand blur bbox" T VectorBlur1.grow_bbox}
+}
+ Input {
+  inputs 0
+  name Input1
+  xpos 370
+  ypos 68
+ }
+ Dot {
+  name Dot4
+  xpos 404
+  ypos 108
+ }
+set N70d77900 [stack 0]
+ Shuffle2 {
+  fromInput1 {{0} B}
+  in1 MotionVectors
+  out1 rgb
+  fromInput2 {{0} B}
+  mappings "3 MotionVectors.red 0 0 rgba.red 0 0 MotionVectors.green 0 1 rgba.green 0 1 MotionVectors.blue 0 2 rgba.blue 0 2"
+  name Shuffle1
+  label "\[value in1]"
+  selected true
+  xpos 478
+  ypos 73
+  postage_stamp true
+ }
+ Dot {
+  name Dot2
+  xpos 512
+  ypos 189
+ }
+push $N70d77900
+ Shuffle2 {
+  inputs 2
+  fromInput1 {{0} B A}
+  fromInput2 {{1} B A}
+  in2 rgba
+  out2 motion
+  mappings "8 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2 rgba.alpha 0 3 rgba.alpha 0 3 rgba.red 1 0 forward.u 1 0 rgba.green 1 1 forward.v 1 1 rgba.blue 1 2 backward.u 1 2 rgba.alpha 1 3 backward.v 1 3"
+  name Shuffle8
+  xpos 370
+  ypos 185
+ }
+ VectorBlur2 {
+  uv motion
+  mv_presets "V-Ray Velocity"
+  uv_offset -0.5
+  scale 100
+  soft_lines true
+  normalize false
+  name VectorBlur1
+  xpos 370
+  ypos 238
+ }
+ Output {
+  name Output1
+  xpos 370
+  ypos 303
+ }
+end_group
+push $Na8922b00
 add_layer {GI GI.red GI.green GI.blue GI.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -229,8 +337,8 @@ Shuffle2 {
  ypos -22
  postage_stamp true
 }
-set N495b200 [stack 0]
-push $N8c0ac800
+set Na8921600 [stack 0]
+push $Na8922b00
 add_layer {Emission Emission.red Emission.green Emission.blue Emission.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -243,15 +351,15 @@ Shuffle2 {
  ypos -23
  postage_stamp true
 }
-set N495ab00 [stack 0]
+set Na8920f00 [stack 0]
 Glow2 {
  brightness 2.98
- size 48.5
+ size 28.5
  name Glow1
  xpos -58
- ypos 111
+ ypos 110
 }
-push $N8c0ac800
+push $Na8922b00
 add_layer {SpecularLighting SpecularLighting.red SpecularLighting.green SpecularLighting.blue SpecularLighting.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -264,8 +372,8 @@ Shuffle2 {
  ypos -18
  postage_stamp true
 }
-set N495a400 [stack 0]
-push $N8c0ac800
+set Na88fb900 [stack 0]
+push $Na8922b00
 add_layer {Refractions Refractions.red Refractions.green Refractions.blue Refractions.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -278,9 +386,9 @@ Shuffle2 {
  ypos -16
  postage_stamp true
 }
-set N4959d00 [stack 0]
+set Na88fb200 [stack 0]
 push 0
-push $N8c0ac800
+push $Na8922b00
 add_layer {Reflections Reflections.red Reflections.green Reflections.blue Reflections.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -293,8 +401,8 @@ Shuffle2 {
  ypos -19
  postage_stamp true
 }
-set N4959600 [stack 0]
-push $N8c0ac800
+set Na88fab00 [stack 0]
+push $Na8922b00
 add_layer {DiffuseLighting DiffuseLighting.red DiffuseLighting.green DiffuseLighting.blue DiffuseLighting.alpha}
 Shuffle2 {
  fromInput1 {{0} B}
@@ -307,7 +415,7 @@ Shuffle2 {
  ypos -19
  postage_stamp true
 }
-set N4958f00 [stack 0]
+set Na88fa400 [stack 0]
 Saturation {
  saturation 2.82
  name Saturation1
@@ -321,7 +429,7 @@ Merge2 {
  xpos -195
  ypos 243
 }
-set N4958800 [stack 0]
+set Na88f9600 [stack 0]
 TimeClip {
  time ""
  first {{"MultiWiper.hold_frame_number + 1"}}
@@ -341,14 +449,14 @@ TimeOffset {
  xpos 170
  ypos 278
 }
-push $N4958800
-push $N495b200
-push $N495ab00
-push $N4959d00
-push $N495a400
-push $N4959600
-push $N4958f00
-push $N4958800
+push $Na88f9600
+push $Na8921600
+push $Na8920f00
+push $Na88fb200
+push $Na88fb900
+push $Na88fab00
+push $Na88fa400
+push $Na88f9600
 Group {
  inputs 8
  name MultiWiper
@@ -414,7 +522,7 @@ Group {
   xpos 819
   ypos -278
  }
-set N4929d00 [stack 0]
+set Na88c2b00 [stack 0]
  Input {
   inputs 0
   name Input13
@@ -435,7 +543,7 @@ set N4929d00 [stack 0]
   xpos 709
   ypos -278
  }
-set N4928800 [stack 0]
+set Na88c1600 [stack 0]
  Input {
   inputs 0
   name Input12
@@ -456,7 +564,7 @@ set N4928800 [stack 0]
   xpos 599
   ypos -278
  }
-set N48f7200 [stack 0]
+set Na88c0100 [stack 0]
 push 0
 push 0
 push 0
@@ -480,7 +588,7 @@ push 0
   xpos 1042
   ypos -278
  }
-set N48f5d00 [stack 0]
+set Na889ab00 [stack 0]
  Input {
   inputs 0
   name Input7
@@ -501,7 +609,7 @@ set N48f5d00 [stack 0]
   xpos 1152
   ypos -278
  }
-set N48f4800 [stack 0]
+set Na8899600 [stack 0]
  Input {
   inputs 0
   name Input6
@@ -522,7 +630,7 @@ set N48f4800 [stack 0]
   xpos 1262
   ypos -278
  }
-set N48d3200 [stack 0]
+set Na8898100 [stack 0]
  Input {
   inputs 0
   name Input5
@@ -543,7 +651,7 @@ set N48d3200 [stack 0]
   xpos 1372
   ypos -278
  }
-set N48d1d00 [stack 0]
+set Na886ab00 [stack 0]
  Input {
   inputs 0
   name Input4
@@ -564,7 +672,7 @@ set N48d1d00 [stack 0]
   xpos 1482
   ypos -278
  }
-set N48d0800 [stack 0]
+set Na8869600 [stack 0]
  Input {
   inputs 0
   name Input3
@@ -585,7 +693,7 @@ set N48d0800 [stack 0]
   xpos 1592
   ypos -278
  }
-set N48a7200 [stack 0]
+set Na8868100 [stack 0]
  Input {
   inputs 0
   name Input2
@@ -606,7 +714,7 @@ set N48a7200 [stack 0]
   xpos 394
   ypos -121
  }
-set N48a5d00 [stack 0]
+set Na8842b00 [stack 0]
  Input {
   inputs 0
   name Input1
@@ -626,7 +734,7 @@ set N48a5d00 [stack 0]
   xpos 88
   ypos -120
  }
-set N48a4800 [stack 0]
+set Na8841600 [stack 0]
  Switch {
   inputs 14
   which {{parent.Wiper.wipe_number}}
@@ -634,20 +742,20 @@ set N48a4800 [stack 0]
   xpos 88
   ypos 35
  }
-push $N4929d00
-push $N4928800
-push $N48f7200
+push $Na88c2b00
+push $Na88c1600
+push $Na88c0100
 push 0
 push 0
 push 0
-push $N48f5d00
-push $N48f4800
-push $N48d3200
-push $N48d1d00
-push $N48d0800
-push $N48a7200
-push $N48a5d00
-push $N48a4800
+push $Na889ab00
+push $Na8899600
+push $Na8898100
+push $Na886ab00
+push $Na8869600
+push $Na8868100
+push $Na8842b00
+push $Na8841600
  Switch {
   inputs 14
   which {{"parent.Wiper.wipe_number  + 1" x59 1}}
@@ -710,7 +818,7 @@ push $N48a4800
    xpos -735
    ypos -532
   }
-set N4876400 [stack 0]
+set Na881b200 [stack 0]
   Dot {
    name Dot3
    xpos -735
@@ -722,7 +830,7 @@ set N4876400 [stack 0]
    xpos -641
    ypos -668
   }
-set N4875600 [stack 0]
+set Na881a400 [stack 0]
   Dot {
    name Dot2
    xpos -481
@@ -790,8 +898,8 @@ set N4875600 [stack 0]
    xpos -423
    ypos -433
   }
-push $N4876400
-push $N4875600
+push $Na881b200
+push $Na881a400
   Keymix {
    inputs 3
    bbox B
@@ -818,7 +926,7 @@ push $N4875600
    xpos -641
    ypos -36
   }
-push $N4875600
+push $Na881a400
   Viewer {
    frame_range 1-632
    viewerProcess "sRGB (ACES)"
@@ -861,7 +969,7 @@ TimeClip {
  xpos 29
  ypos 216
 }
-push $N4958800
+push $Na88f9600
 TimeClip {
  time ""
  last {{MultiWiper.hold_frame_number}}
@@ -885,16 +993,6 @@ Merge2 {
  xpos 170
  ypos 321
 }
-set Nc9e1d00 [stack 0]
-Viewer {
- frame 537
- frame_range 1-640
- viewerProcess "sRGB (ACES)"
- name Viewer1
- xpos 170
- ypos 396
-}
-push $Nc9e1d00
 FrameRange {
  first_frame {{Read1.origfirst}}
  last_frame {{"Read1.origlast + TimeOffset1.time_offset"}}
@@ -903,96 +1001,11 @@ FrameRange {
  xpos 412
  ypos 321
 }
-StickyNote {
- inputs 0
- name StickyNote3
- tile_color 0x51cc11ff
- label "adjust for render engine\n(links on github page)"
- note_font_size 24
- xpos -296
- ypos 171
+Viewer {
+ frame 166
+ frame_range 1-640
+ viewerProcess "sRGB (ACES)"
+ name Viewer1
+ xpos 412
+ ypos 381
 }
-StickyNote {
- inputs 0
- name StickyNote2
- tile_color 0x24cc14ff
- label "adjust times for blending"
- note_font_size 24
- xpos 42
- ypos 133
-}
-Group {
- inputs 0
- name MotionBlur
- xpos 410
- ypos -2
- addUserKnob {20 mbsettings l "Motion Blur Settings" t "Adjust Motion Blur"}
- addUserKnob {41 useGPUIfAvailable l "Use GPU if available" T VectorBlur1.useGPUIfAvailable}
- addUserKnob {41 uv l "uv channels" T VectorBlur1.uv}
- addUserKnob {41 mv_presets l "mv presets" T VectorBlur1.mv_presets}
- addUserKnob {26 mb_div l "Motion Blur"}
- addUserKnob {41 blur_type l "blur type" T VectorBlur1.blur_type}
- addUserKnob {41 scale l "motion amount" T VectorBlur1.scale}
- addUserKnob {41 motion_falloff l "motion falloff" T VectorBlur1.motion_falloff}
- addUserKnob {41 offset l "shutter offset" T VectorBlur1.offset}
- addUserKnob {41 grow_bbox l "expand blur bbox" T VectorBlur1.grow_bbox}
-}
- Input {
-  inputs 0
-  name Input1
-  xpos 370
-  ypos 68
- }
- Dot {
-  name Dot4
-  xpos 404
-  ypos 108
- }
-set Nc9ab900 [stack 0]
-add_layer {MotionVectors MotionVectors.red MotionVectors.green MotionVectors.blue}
- Shuffle2 {
-  fromInput1 {{0} B}
-  in1 MotionVectors
-  out1 rgb
-  fromInput2 {{0} B}
-  mappings "3 MotionVectors.red 0 0 rgba.red 0 0 MotionVectors.green 0 1 rgba.green 0 1 MotionVectors.blue 0 2 rgba.blue 0 2"
-  name Shuffle1
-  label "\[value in1]"
-  xpos 478
-  ypos 73
-  postage_stamp true
- }
- Dot {
-  name Dot2
-  xpos 512
-  ypos 189
- }
-push $Nc9ab900
- Shuffle2 {
-  inputs 2
-  fromInput1 {{0} B A}
-  fromInput2 {{1} B A}
-  in2 rgba
-  out2 motion
-  mappings "8 rgba.red 0 0 rgba.red 0 0 rgba.green 0 1 rgba.green 0 1 rgba.blue 0 2 rgba.blue 0 2 rgba.alpha 0 3 rgba.alpha 0 3 rgba.red 1 0 forward.u 1 0 rgba.green 1 1 forward.v 1 1 rgba.blue 1 2 backward.u 1 2 rgba.alpha 1 3 backward.v 1 3"
-  name Shuffle8
-  xpos 370
-  ypos 185
- }
- VectorBlur2 {
-  uv motion
-  mv_presets "V-Ray Velocity"
-  uv_offset -0.5
-  scale 14
-  soft_lines true
-  normalize false
-  name VectorBlur1
-  xpos 370
-  ypos 238
- }
- Output {
-  name Output1
-  xpos 370
-  ypos 303
- }
-end_group
